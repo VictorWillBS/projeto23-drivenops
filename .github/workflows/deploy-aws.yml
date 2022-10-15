@@ -1,0 +1,36 @@
+name: deploy-aws
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: self-hosted
+    steps: 
+      - name: checkout repository
+        uses: actions/checkout@v3
+      - name: create back-end .env file
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_POSTGRES_USER: ${{secrets.USER_SECRET}}
+          envkey_POSTGRES_PASSWORD: ${{secrets.PASSWORD_SECRET}}
+          envkey_POSTGRES_DB: ${{secrets.DB_SECRET}}
+          envkey_DATABASE_URL: ${{secrets.DATABASE_URL_SECRET}}
+          directory: back-end/
+          file_name: .env
+          fail_on_empty: true
+      - name: create front-end .env file
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_POSTGRES_USER: ${{secrets.USER_SECRET}}
+          envkey_POSTGRES_PASSWORD: ${{secrets.PASSWORD_SECRET}}
+          envkey_POSTGRES_DB: ${{secrets.DB_SECRET}}
+          envkey_DATABASE_URL: ${{secrets.DATABASE_URL_SECRET}}
+          directory: front-end/
+          file_name: .env
+          fail_on_empty: true
+      - name: Build Process
+        run: docker-compose build
+      - name: Run Docker Compose
+        run: docker-compose down -v & docker-compose up
+        
