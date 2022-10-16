@@ -31,5 +31,5 @@ jobs:
       - name: Build Process
         run: docker-compose build
       - name: Run Docker Compose
-        run: docker-compose down -v & docker-compose up
+         run: docker-compose down -v & docker-compose up -d
         
